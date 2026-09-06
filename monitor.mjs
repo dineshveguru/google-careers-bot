@@ -2,7 +2,8 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 const root = process.cwd();
-const env = await readEnv(resolve(root, ".env"));
+// Local runs use .env; hosted runners inject the same names as environment variables.
+const env = { ...await readEnv(resolve(root, ".env")), ...process.env };
 const searchUrl = env.SEARCH_URL;
 const keywords = (env.ROLE_KEYWORDS ?? "")
   .split(",")

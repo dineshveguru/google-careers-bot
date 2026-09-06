@@ -39,6 +39,18 @@ launchctl load ~/Library/LaunchAgents/com.you.google-careers-monitor.plist
 
 Your Mac must be awake and connected for an alert to be sent. The monitor does not apply to roles or contact anyone; it only sends your private Telegram alert.
 
+## Run on GitHub Actions
+
+GitHub Actions can run the monitor without your Mac. The included workflow checks every five minutes and commits the updated `data/seen-jobs.json` state after each run.
+
+1. In your GitHub repository, open **Settings → Secrets and variables → Actions**.
+2. Add these **Repository secrets**: `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID`.
+3. Add these **Repository variables** (not secrets): `SEARCH_URL` and `ROLE_KEYWORDS`. Copy their values from `.env.example` or your local `.env`.
+4. Commit and push `.github/workflows/check-google-careers.yml` and `data/seen-jobs.json`. Do not commit `.env`.
+5. Open the repository’s **Actions** tab, select **Check Google Careers**, and click **Run workflow** once. Confirm it completes successfully and check Telegram.
+
+The workflow needs **Read and write permissions** for Actions in **Settings → Actions → General → Workflow permissions**, so it can save the seen-role state. If this repository is public and inactive for 60 days, GitHub can disable scheduled workflows; manually running it re-enables them.
+
 ## Verify alerts
 
 Run `npm run test:telegram` to send one safe test message. It does not check Google Careers or alter the saved baseline.
