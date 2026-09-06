@@ -1,0 +1,15 @@
+{
+  "name": "google-careers-telegram-monitor",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Alerts a Telegram chat when matching Google Careers jobs appear.",
+  "scripts": {
+    "check": "node monitor.mjs",
+    "initialize": "node monitor.mjs --initialize",
+    "test:telegram": "node monitor.mjs --test-telegram",
+    "alert:current": "node monitor.mjs --alert-current"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
