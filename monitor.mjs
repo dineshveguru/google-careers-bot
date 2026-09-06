@@ -70,11 +70,15 @@ async function fetchJobs(url) {
 
 function formatAlert(job) {
   return [
-    "🚨 New Google Careers match",
-    job.title,
-    job.location && `📍 ${job.location}`,
-    job.url,
-    "\nForward this link to your Google contact now.",
+    "✨ <b>New Google opportunity</b>",
+    "",
+    `<b>${escapeHtml(job.title)}</b>`,
+    "Google",
+    job.location && `📍 ${escapeHtml(job.location)}`,
+    "",
+    `🔗 <a href=\"${escapeHtml(job.url)}\">View role &amp; apply</a>`,
+    "",
+    "<i>Worth sharing with your Google contact now.</i>",
   ].filter(Boolean).join("\n");
 }
 
@@ -82,7 +86,7 @@ async function sendTelegram(env, text) {
   const response = await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ chat_id: env.TELEGRAM_CHAT_ID, text, disable_web_page_preview: true }),
+    body: JSON.stringify({ chat_id: env.TELEGRAM_CHAT_ID, text, parse_mode: "HTML", disable_web_page_preview: true }),
   });
   if (!response.ok) fail(`Telegram rejected the alert (HTTP ${response.status}). Check the bot token and chat ID.`);
 }
@@ -107,4 +111,5 @@ async function saveState(path, ids) {
 
 function htmlText(value) { return value.replace(/<[^>]+>/g, "").trim(); }
 function decode(value) { return value.replaceAll("&amp;", "&").replaceAll("&#39;", "'").replaceAll("&quot;", '"'); }
+function escapeHtml(value) { return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;"); }
 function fail(message) { console.error(`Error: ${message}`); process.exit(1); }
